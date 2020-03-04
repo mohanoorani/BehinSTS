@@ -1,0 +1,10 @@
+﻿{
+  "profiles": {
+    "Skoruba.IdentityServer4.Admin.UserEvent.Worker": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}

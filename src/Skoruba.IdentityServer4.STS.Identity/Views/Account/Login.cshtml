@@ -1,0 +1,118 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@using Skoruba.IdentityServer4.STS.Identity.Configuration.Interfaces
+@using Skoruba.IdentityServer4.STS.Identity.Helpers.Localization
+@inject IViewLocalizer Localizer
+@model Skoruba.IdentityServer4.STS.Identity.ViewModels.Account.LoginViewModel
+@inject IRootConfiguration RootConfiguration
+
+<div class="login-page">
+    <div class="row">
+        @if (Model.EnableLocalLogin)
+        {
+            <div class="content">
+                <div class="container-login100">
+                    <div class="wrap-login100">
+
+                        <div class="login100-more">
+                        </div>
+
+                        <form asp-route="Login" class="login100-form validate-form">
+
+                            <div id="center-logo" class="text-center">
+                                <img src="~/images/logo.png" />
+                            </div>
+
+                            <div class="form-group">
+                                <input type="text" asp-for="Username" required="required" placeholder="Username" />
+                                <label for="input" class="control-label"></label><i class="bar"></i>
+                            </div>
+
+                            @*<div class="wrap-input100 validate-input">
+                                    <input type="text" id="username" class="input100" asp-for="Username" placeholder="Username">
+                                        <span class="focus-input100"></span>
+                                        <span class="label-input100" for="Username" >Username</span>
+                                </div>*@
+
+
+                            <div class="form-group">
+                                <input type="password" asp-for="Password" required="required" placeholder="Password" />
+                                <label for="input" class="control-label"></label><i class="bar"></i>
+                            </div>
+
+                            @*<div class="wrap-input100 validate-input" data-validate="Password is required">
+                                    <input type="password" id="password" class="input100" asp-for="Password" placeholder="Password">
+                                    <span type="password" class="focus-input100"></span>
+                                    <span class="label-input100" for="Password">Password</span>
+                                </div>*@
+
+
+                            @*<div class="contact100-form-checkbox">
+                                    <label class="label-checkbox100" for="ckb1">
+                                        Remember me
+                                    </label>
+                                    <input class="input-checkbox100" id="ckb1" type="checkbox" name="remember-me">
+
+                                </div>*@
+
+                            <div class="container-login100-form-btn">
+                                <button class="login100-form-btn" name="button" value="login">
+                                    @Localizer["Login"]
+                                </button>
+                            </div>
+
+                            @await Html.PartialAsync("_ValidationSummary")
+
+                        </form>
+
+
+                        @*<div class="center-logo">
+                                <img src="~/images/tagline300-12.png"/>
+                            </div>*@
+
+                        <div class="side-logo">
+                            <img class="mx-auto d-block" src="~/images/lo.png" />
+                        </div>
+
+                    </div>
+
+                    <div class="footer">
+                        <a href="https://www.behinrahkar.com/">www.BehinRahkar.com</a>
+                    </div>
+                </div>
+
+            </div>
+        }
+
+        @*@if (Model.VisibleExternalProviders.Any())
+            {
+                <div class="col-sm-6 external-providers">
+                    <div class="card mt-3">
+                        <h5 class="card-header">@Localizer["ExternalLogin"]</h5>
+                        <div class="card-body">
+                            <ul class="list-inline">
+                                @foreach (var provider in Model.VisibleExternalProviders)
+                                {
+                                    <li class="list-inline-item">
+                                        <a class="btn btn-primary"
+                                           asp-action="ExternalLogin"
+                                           asp-route-provider="@provider.AuthenticationScheme"
+                                           asp-route-returnUrl="@Model.ReturnUrl">
+                                            @provider.DisplayName
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            @if (!Model.EnableLocalLogin && !Model.VisibleExternalProviders.Any())
+            {
+                <div class="alert alert-warning">
+                    <strong>@Localizer["InvalidRequest"]</strong>
+                    @Localizer["NoSchema"]
+                </div>
+            }*@
+    </div>
+</div>
