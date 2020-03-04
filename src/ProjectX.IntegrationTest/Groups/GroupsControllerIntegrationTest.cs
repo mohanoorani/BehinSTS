@@ -3,7 +3,6 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using FluentAssertions;
-using ProjectX.Application.Dtos.Group;
 using Xunit;
 
 namespace ProjectX.IntegrationTest.Groups
@@ -24,19 +23,9 @@ namespace ProjectX.IntegrationTest.Groups
             //};
 
             //RegisterUser(user).GetAwaiter().GetResult();
-
-            var groupDto = new GroupBuilder().WithName("TestGroup").BuildCreateGroupDto();
-            var childGroupDto = new GroupBuilder().WithName("ChildGroup").BuildCreateGroupDto();
-            
-            createdGroup = Create(groupDto).GetAwaiter().GetResult();
-            childGroup = Create(childGroupDto).GetAwaiter().GetResult();
         }
 
         private const string GroupsUrl = "api/groups";
-
-        private readonly GroupDto createdGroup;
-
-        private readonly GroupDto childGroup;
 
         private readonly HttpClient client;
 
@@ -114,16 +103,16 @@ namespace ProjectX.IntegrationTest.Groups
 
             groups.Should().HaveCount(2);
 
-            var firstGroup = groups.First(i => i.Name == createdGroup.Name);
-            firstGroup.Name.Should().Be(createdGroup.Name);
-            firstGroup.Description.Should().Be(createdGroup.Description);
+            var firstGroup = groups.First(i => i.Name == DbMigrationConstants.Group);
+            firstGroup.Name.Should().Be(DbMigrationConstants.Group);
+            firstGroup.Description.Should().Be(DbMigrationConstants.Group);
 
-            var secondGroup = groups.First(i => i.Name == childGroup.Name);
-            secondGroup.Name.Should().Be(childGroup.Name);
-            secondGroup.Description.Should().Be(childGroup.Description);
+            var secondGroup = groups.First(i => i.Name == DbMigrationConstants.ChildGroup);
+            secondGroup.Name.Should().Be(DbMigrationConstants.ChildGroup);
+            secondGroup.Description.Should().Be(DbMigrationConstants.ChildGroup);
 
-            await Delete(createdGroup.Name);
-            await Delete(childGroup.Name);
+            await Delete(DbMigrationConstants.Group);
+            await Delete(DbMigrationConstants.ChildGroup);
         }
 
         [Fact]

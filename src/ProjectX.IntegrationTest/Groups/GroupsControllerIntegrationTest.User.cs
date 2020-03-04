@@ -9,17 +9,7 @@ namespace ProjectX.IntegrationTest.Groups
         [Fact]
         public async Task TestAddUser_WhenEverythingIsOk_StatusMustBeNoContent()
         {
-            var user = new
-            {
-                UserName = "AdminUser",
-                Email = "AdminUser@AdminUser.com",
-                PhoneNumber = "00000",
-                AccessFailedCount = 0
-            };
-
-            await RegisterUser(user);
-
-            var groupUser = new GroupUserBuilder().WithGroupName(createdGroup.Name).WithUsername(user.UserName).Build();
+            var groupUser = new GroupUserBuilder().Build();
 
             await AddUser(groupUser);
 
