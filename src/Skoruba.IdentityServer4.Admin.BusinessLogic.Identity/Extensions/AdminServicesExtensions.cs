@@ -4,14 +4,17 @@ using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using ProjectX.Application.Services;
-using ProjectX.Application.Services.Groups;
-using ProjectX.Application.Services.Interfaces;
-using ProjectX.Application.Services.Interfaces.Groups;
-using ProjectX.Persistence.Repositories;
-using ProjectX.Persistence.Repositories.Groups;
-using ProjectX.Persistence.Repositories.Interfaces;
-using ProjectX.Persistence.Repositories.Interfaces.Groups;
+using ProjectX.IdentityContext.Application.Services.Audits;
+using ProjectX.IdentityContext.Application.Services.Groups;
+using ProjectX.IdentityContext.Application.Services.Interfaces.Audits;
+using ProjectX.IdentityContext.Application.Services.Interfaces.Groups;
+using ProjectX.IdentityContext.Application.Services.Interfaces.Loggers;
+using ProjectX.IdentityContext.Application.Services.Loggers;
+using ProjectX.IdentityContext.Persistence.Repositories.Audits;
+using ProjectX.IdentityContext.Persistence.Repositories.Groups;
+using ProjectX.IdentityContext.Persistence.Repositories.Interfaces.Audits;
+using ProjectX.IdentityContext.Persistence.Repositories.Interfaces.Groups;
+using ProjectX.IdentityContext.Persistence.UnitOfWork;
 using Skoruba.IdentityServer4.Admin.BusinessLogic.Identity.Dtos.Identity;
 using Skoruba.IdentityServer4.Admin.BusinessLogic.Identity.Mappers.Configuration;
 using Skoruba.IdentityServer4.Admin.BusinessLogic.Identity.Resources;
@@ -144,14 +147,16 @@ namespace Microsoft.Extensions.DependencyInjection
                 TRoleClaimDto>(services, null);
         }
 
-        public static IServiceCollection AddAdminAspNetIdentityServices<TIdentityDbContext, TPersistedGrantDbContext, TLogDbContext,
+        public static IServiceCollection AddAdminAspNetIdentityServices<TIdentityDbContext, TPersistedGrantDbContext,
+            TLogDbContext,
             TUserDto, TUserDtoKey, TRoleDto, TRoleDtoKey, TUserKey, TRoleKey, TUser, TRole, TKey, TUserClaim, TUserRole,
             TUserLogin, TRoleClaim, TUserToken,
             TUsersDto, TRolesDto, TUserRolesDto, TUserClaimsDto,
             TUserProviderDto, TUserProvidersDto, TUserChangePasswordDto, TRoleClaimsDto, TUserClaimDto, TRoleClaimDto>(
             this IServiceCollection services, HashSet<Type> profileTypes)
             where TPersistedGrantDbContext : DbContext, IAdminPersistedGrantDbContext
-            where TIdentityDbContext : IdentityDbContext<TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken>
+            where TIdentityDbContext : IdentityDbContext<TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin,
+                TRoleClaim, TUserToken>
             where TLogDbContext : DbContext, IAdminLogDbContext
             where TUserDto : UserDto<TUserDtoKey>
             where TUser : IdentityUser<TKey>
@@ -184,7 +189,7 @@ namespace Microsoft.Extensions.DependencyInjection
                 .AddTransient<IPersistedGrantAspNetIdentityRepository, PersistedGrantAspNetIdentityRepository<
                     TIdentityDbContext, TPersistedGrantDbContext, TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin,
                     TRoleClaim, TUserToken>>();
-            services.AddTransient<IUserEventRepository, UserEventRepository<TLogDbContext>>();
+            services.AddTransient<IAuditRepository, AuditRepository<TLogDbContext>>();
             services.AddTransient<IGroupRepository, GroupRepository<TLogDbContext, TUser, TKey>>();
 
             //Services
@@ -199,13 +204,16 @@ namespace Microsoft.Extensions.DependencyInjection
                         TUserProviderDto, TUserProvidersDto, TUserChangePasswordDto, TRoleClaimsDto>>();
             services.AddTransient<IPersistedGrantAspNetIdentityService, PersistedGrantAspNetIdentityService>();
             services.AddTransient<IGroupService, GroupService>();
-            services.AddTransient<IUserEventService, UserEventService>();
+            services.AddTransient<IAuditService, AuditService>();
             services.AddScoped<ILoggerService, LoggerService>();
+            services.AddScoped<IUnitOfWork, AdminLogDbContextUnitOfWork<TLogDbContext>>();
+
 
             //Resources
             services.AddScoped<IIdentityServiceResources, IdentityServiceResources>();
             services
-                .AddScoped<IPersistedGrantAspNetIdentityServiceResources, PersistedGrantAspNetIdentityServiceResources>();
+                .AddScoped<IPersistedGrantAspNetIdentityServiceResources, PersistedGrantAspNetIdentityServiceResources
+                >();
 
             //Register mapping
             services.AddAdminAspNetIdentityMapping()

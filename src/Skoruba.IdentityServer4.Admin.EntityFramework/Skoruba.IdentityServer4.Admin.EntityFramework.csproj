@@ -21,7 +21,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ProjectX.Domain\ProjectX.Domain.csproj" />
+    <ProjectReference Include="..\ProjectX.IdentityContext.Domain\ProjectX.IdentityContext.Domain.csproj" />
     <ProjectReference Include="..\Skoruba.IdentityServer4.Admin.EntityFramework.Extensions\Skoruba.IdentityServer4.Admin.EntityFramework.Extensions.csproj" />
   </ItemGroup>
 </Project>

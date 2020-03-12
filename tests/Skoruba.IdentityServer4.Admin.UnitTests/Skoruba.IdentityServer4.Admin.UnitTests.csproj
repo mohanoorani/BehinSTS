@@ -24,6 +24,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <ProjectReference Include="..\..\src\ProjectX..IdentityContext.Application\ProjectX.IdentityContext.Application.csproj" />
 	  <ProjectReference Include="..\..\src\Skoruba.IdentityServer4.Admin\Skoruba.IdentityServer4.Admin.csproj" />
 	</ItemGroup>
 

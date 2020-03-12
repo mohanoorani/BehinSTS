@@ -17,9 +17,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\..\ProjectX.Application\ProjectX.Application.csproj" />
-		<ProjectReference Include="..\ProjectX.Event\ProjectX.Event.csproj" />
-		<ProjectReference Include="..\ProjectX.Persistence\ProjectX.Persistence.csproj" />
+		<ProjectReference Include="..\ProjectX..IdentityContext.Application\ProjectX.IdentityContext.Application.csproj" />
+		<ProjectReference Include="..\ProjectX.IdentityContext.Event\ProjectX.IdentityContext.Event.csproj" />
+		<ProjectReference Include="..\ProjectX.IdentityContext.Persistence\ProjectX.IdentityContext.Persistence.csproj" />
 		<ProjectReference Include="..\Skoruba.IdentityServer4.Admin.BusinessLogic.Shared\Skoruba.IdentityServer4.Admin.BusinessLogic.Shared.csproj" />
 		<ProjectReference Include="..\Skoruba.IdentityServer4.Admin.BusinessLogic\Skoruba.IdentityServer4.Admin.BusinessLogic.csproj" />
 		<ProjectReference Include="..\Skoruba.IdentityServer4.Admin.EntityFramework.Identity\Skoruba.IdentityServer4.Admin.EntityFramework.Identity.csproj" />

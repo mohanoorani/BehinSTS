@@ -1,25 +1,24 @@
-﻿using System;
-using Microsoft.AspNetCore.Mvc.Filters;
-using ProjectX.Application.Services.Interfaces;
-using Skoruba.IdentityServer4.Admin.BusinessLogic.Services.Interfaces;
+﻿using Microsoft.AspNetCore.Mvc.Filters;
+using ProjectX.IdentityContext.Application.Services.Interfaces.Audits;
+using ProjectX.IdentityContext.Application.Services.Interfaces.Loggers;
 
 namespace Skoruba.IdentityServer4.Admin.Api.Filters
 {
     public class DomainEventLoggerFilter : ActionFilterAttribute
     {
+        private readonly IAuditService _auditService;
         private readonly ILoggerService logger;
-        private readonly IUserEventService userEventService;
 
-        public DomainEventLoggerFilter(ILoggerService logger,IUserEventService userEventService)
+        public DomainEventLoggerFilter(ILoggerService logger, IAuditService auditService)
         {
             this.logger = logger;
-            this.userEventService = userEventService;
+            _auditService = auditService;
         }
 
         public override void OnActionExecuted(ActionExecutedContext context)
         {
             foreach (var log in logger.DomainEvents)
-                userEventService.Add(log.GetType().Name, log.ToString());
+                _auditService.Add(log.AggregateId, log.GetType().Name, log.EventTime, log.ToString());
         }
     }
 }

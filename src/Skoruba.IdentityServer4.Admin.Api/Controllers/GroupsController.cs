@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using ProjectX.Application.Dtos.Group;
-using ProjectX.Application.Services.Interfaces.Groups;
+using ProjectX.IdentityContext.Application.Dtos.Group;
 using Skoruba.IdentityServer4.Admin.Api.ExceptionHandling;
 using Skoruba.IdentityServer4.Admin.Api.Filters;
+using IGroupService = ProjectX.IdentityContext.Application.Services.Interfaces.Groups.IGroupService;
 
 namespace Skoruba.IdentityServer4.Admin.Api.Controllers
 {
@@ -115,9 +115,9 @@ namespace Skoruba.IdentityServer4.Admin.Api.Controllers
         }
 
         [HttpDelete("{name}/Users/{userName}")]
-        public async Task<ActionResult> DeleteUser(GroupUserDto dto)
+        public async Task<ActionResult> DeleteUser(string name, string username)
         {
-            await groupService.RemoveUser(dto).ConfigureAwait(false);
+            await groupService.RemoveUser(name,username).ConfigureAwait(false);
 
             return Ok();
         }

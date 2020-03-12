@@ -1,31 +1,30 @@
 ﻿using System;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using ProjectX.Domain.Entities;
-using ProjectX.Domain.Entities.Groups;
+using ProjectX.IdentityContext.Domain.Entities.Audits;
+using ProjectX.IdentityContext.Domain.Entities.Groups;
 using Skoruba.IdentityServer4.Admin.EntityFramework.Constants;
 using Skoruba.IdentityServer4.Admin.EntityFramework.Entities;
 using Skoruba.IdentityServer4.Admin.EntityFramework.Interfaces;
-using Skoruba.IdentityServer4.Admin.EntityFramework.Shared.Entities.Identity;
 
 namespace Skoruba.IdentityServer4.Admin.EntityFramework.Shared.DbContexts
 {
     public class AdminLogDbContext : DbContext, IAdminLogDbContext
     {
+        public AdminLogDbContext(DbContextOptions<AdminLogDbContext> options)
+            : base(options)
+        {
+        }
+
         public DbSet<Log> Logs { get; set; }
 
-        public DbSet<UserEvent> UserEvents { get; set; }
+        public DbSet<Audit> Audits { get; set; }
 
         public DbSet<Group> Groups { get; set; }
 
         public DbSet<GroupChildGroup> GroupChildGroups { get; set; }
 
         public DbSet<GroupUser> GroupUsers { get; set; }
-
-        public AdminLogDbContext(DbContextOptions<AdminLogDbContext> options)
-            : base(options)
-        {
-        }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -54,8 +53,11 @@ namespace Skoruba.IdentityServer4.Admin.EntityFramework.Shared.DbContexts
 
                 b.HasMany(i => i.ChildGroups).WithOne(i => i.ParentGroup).HasForeignKey("ParentGroupId");
                 b.HasMany(i => i.ParentGroups).WithOne(i => i.ChildGroup).HasForeignKey(i => i.ChildGroupId);
+                
+                b.HasOne(i => i.Creator).WithMany().HasForeignKey(i => i.CreatorId);
+                b.HasOne(i => i.Updater).WithMany().HasForeignKey(i => i.UpdaterId);
             });
-           
+
             builder.Entity<GroupChildGroup>(b =>
             {
                 b.Property<Guid>("ParentGroupId");
@@ -67,8 +69,13 @@ namespace Skoruba.IdentityServer4.Admin.EntityFramework.Shared.DbContexts
                 b.Property<Guid>("GroupId");
                 b.HasKey("GroupId", "UserId");
 
-                b.HasOne(i => i.User).WithMany();
+                //b.HasOne(i => i.User).WithMany();
             });
+
+            //builder.Entity<Audit>(b =>
+            //{
+            //    b.HasOne(i => i.User).WithMany();
+            //});
         }
     }
 

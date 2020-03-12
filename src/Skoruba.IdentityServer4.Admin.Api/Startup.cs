@@ -15,6 +15,7 @@ using Skoruba.IdentityServer4.Admin.Api.ExceptionHandling;
 using Skoruba.IdentityServer4.Admin.Api.Filters;
 using Skoruba.IdentityServer4.Admin.Api.Helpers;
 using Skoruba.IdentityServer4.Admin.Api.Mappers;
+using Skoruba.IdentityServer4.Admin.Api.Middlewares;
 using Skoruba.IdentityServer4.Admin.Api.Resources;
 using Skoruba.IdentityServer4.Admin.BusinessLogic.Identity.Dtos.Identity;
 using Skoruba.IdentityServer4.Admin.EntityFramework.Shared.DbContexts;
@@ -51,8 +52,10 @@ namespace Skoruba.IdentityServer4.Admin.Api
             // Add authentication services
             RegisterAuthentication(services);
 
-            // Add authorization services
-            RegisterAuthorization(services);
+            AddSerilogToProjectXIntegrationTest(services);
+
+            // Add DbContexts
+            RegisterDbContexts(services);
 
             var profileTypes = new HashSet<Type>
             {
@@ -139,6 +142,7 @@ namespace Skoruba.IdentityServer4.Admin.Api
             UseAuthentication(app);
 
             app.UseMiddleware<ErrorHandlingMiddleware>();
+            app.UseMiddleware<UnitOfWorkMiddleWare>();
 
             app.UseCors();
             app.UseAuthorization();
@@ -152,14 +156,18 @@ namespace Skoruba.IdentityServer4.Admin.Api
             });
         }
 
-        public virtual void RegisterDbContexts(IServiceCollection services)
+        protected virtual void AddSerilogToProjectXIntegrationTest(IServiceCollection services)
+        {
+        }
+
+        protected virtual void RegisterDbContexts(IServiceCollection services)
         {
             services
                 .AddDbContexts<AdminIdentityDbContext, IdentityServerConfigurationDbContext,
                     IdentityServerPersistedGrantDbContext, AdminLogDbContext, AdminAuditLogDbContext>(Configuration);
         }
 
-        public virtual void RegisterAuthentication(IServiceCollection services)
+        protected virtual void RegisterAuthentication(IServiceCollection services)
         {
             var adminApiConfiguration =
                 Configuration.GetSection(nameof(AdminApiConfiguration)).Get<AdminApiConfiguration>();
@@ -172,7 +180,7 @@ namespace Skoruba.IdentityServer4.Admin.Api
             services.AddAuthorizationPolicies();
         }
 
-        public virtual void UseAuthentication(IApplicationBuilder app)
+        protected virtual void UseAuthentication(IApplicationBuilder app)
         {
             app.UseAuthentication();
         }

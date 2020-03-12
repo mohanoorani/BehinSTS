@@ -17,13 +17,13 @@ namespace Skoruba.IdentityServer4.Admin.Api.Configuration.Test
         {
         }
 
-        public override void RegisterDbContexts(IServiceCollection services)
+        protected override void RegisterDbContexts(IServiceCollection services)
         {
             services.RegisterDbContextsStaging<AdminIdentityDbContext, IdentityServerConfigurationDbContext, 
                 IdentityServerPersistedGrantDbContext, AdminLogDbContext, AdminAuditLogDbContext>();
         }
 
-        public override void RegisterAuthentication(IServiceCollection services)
+        protected override void RegisterAuthentication(IServiceCollection services)
         {
             services.AddIdentity<UserIdentity, UserIdentityRole>(options => { options.User.RequireUniqueEmail = true; })
                 .AddEntityFrameworkStores<AdminIdentityDbContext>()
@@ -44,7 +44,7 @@ namespace Skoruba.IdentityServer4.Admin.Api.Configuration.Test
             services.AddAuthorizationPolicies();
         }
 
-        public override void UseAuthentication(IApplicationBuilder app)
+        protected override void UseAuthentication(IApplicationBuilder app)
         {
             app.UseAuthentication();
             app.UseMiddleware<AuthenticatedTestRequestMiddleware>();

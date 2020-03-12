@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using ProjectX.Domain.Entities;
-using ProjectX.Domain.Entities.Groups;
+using ProjectX.IdentityContext.Domain.Entities.Audits;
+using ProjectX.IdentityContext.Domain.Entities.Groups;
 using Skoruba.IdentityServer4.Admin.EntityFramework.Entities;
 
 namespace Skoruba.IdentityServer4.Admin.EntityFramework.Interfaces
@@ -9,7 +9,7 @@ namespace Skoruba.IdentityServer4.Admin.EntityFramework.Interfaces
     {
         DbSet<Log> Logs { get; set; }
 
-        DbSet<UserEvent> UserEvents { get; set; }
+        DbSet<Audit> Audits { get; set; }
 
         DbSet<Group> Groups { get; set; }
 

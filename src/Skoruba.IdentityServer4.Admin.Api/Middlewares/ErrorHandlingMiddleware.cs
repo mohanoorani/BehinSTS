@@ -3,38 +3,41 @@ using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
-using ProjectX.Application.Exceptions;
+using ProjectX.IdentityContext.Domain.Exceptions;
 
-public class ErrorHandlingMiddleware
+namespace Skoruba.IdentityServer4.Admin.Api.Middlewares
 {
-    private readonly RequestDelegate next;
-
-    public ErrorHandlingMiddleware(RequestDelegate next)
+    public class ErrorHandlingMiddleware
     {
-        this.next = next;
-    }
+        private readonly RequestDelegate next;
 
-    public async Task Invoke(HttpContext context)
-    {
-        try
+        public ErrorHandlingMiddleware(RequestDelegate next)
         {
-            await next(context);
+            this.next = next;
         }
-        catch (Exception ex)
+
+        public async Task Invoke(HttpContext context)
         {
-            await HandleExceptionAsync(context, ex);
+            try
+            {
+                await next(context);
+            }
+            catch (Exception ex)
+            {
+                await HandleExceptionAsync(context, ex);
+            }
         }
-    }
 
-    private static Task HandleExceptionAsync(HttpContext context, Exception ex)
-    {
-        var code = HttpStatusCode.InternalServerError;
+        private static Task HandleExceptionAsync(HttpContext context, Exception ex)
+        {
+            var code = HttpStatusCode.InternalServerError;
 
-        if (ex is EntityNotFoundException || ex != null) code = HttpStatusCode.BadRequest;
+            if (ex is EntityNotFoundException || ex != null) code = HttpStatusCode.BadRequest;
 
-        var result = JsonConvert.SerializeObject(new {error = ex.Message});
-        context.Response.ContentType = "application/json";
-        context.Response.StatusCode = (int) code;
-        return context.Response.WriteAsync(result);
+            var result = JsonConvert.SerializeObject(new { error = ex.Message });
+            context.Response.ContentType = "application/json";
+            context.Response.StatusCode = (int)code;
+            return context.Response.WriteAsync(result);
+        }
     }
 }

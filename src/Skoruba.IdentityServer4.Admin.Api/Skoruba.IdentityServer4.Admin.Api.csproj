@@ -49,7 +49,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\..\ProjectX.Application\ProjectX.Application.csproj" />
+        <ProjectReference Include="..\ProjectX..IdentityContext.Application\ProjectX.IdentityContext.Application.csproj" />
+        <ProjectReference Include="..\ProjectX.IdentityContext.Domain\ProjectX.IdentityContext.Domain.csproj" />
         <ProjectReference Include="..\Skoruba.IdentityServer4.Admin.BusinessLogic.Identity\Skoruba.IdentityServer4.Admin.BusinessLogic.Identity.csproj" />
         <ProjectReference Include="..\Skoruba.IdentityServer4.Admin.BusinessLogic.Shared\Skoruba.IdentityServer4.Admin.BusinessLogic.Shared.csproj" />
         <ProjectReference Include="..\Skoruba.IdentityServer4.Admin.BusinessLogic\Skoruba.IdentityServer4.Admin.BusinessLogic.csproj" />
