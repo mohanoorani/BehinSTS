@@ -7,13 +7,13 @@ using ProjectX.IdentityContext.Domain.Entities.Groups;
 
 namespace ProjectX.IdentityContext.Persistence.Repositories.Groups
 {
-    public partial class GroupRepository<TDbContext, TUser, TKey>
+    public partial class GroupRepository<TDbContext>
     {
-        public async Task AddChildGroup(Guid parentGroupId, Guid childGroupId)
+        public async Task AddChildGroup(GroupChildGroup childGroup)
         {
-            var group = dbContext.Groups.First(i => i.Id == parentGroupId);
+            var group = dbContext.Groups.First(i => i.Id == childGroup.ParentGroupId);
 
-            group.ChildGroups.Add(new GroupChildGroup{ChildGroupId = childGroupId});
+            group.ChildGroups.Add(childGroup);
             group.Updated = DateTime.Now;
 
             await dbContext.SaveChangesAsync();
@@ -28,11 +28,12 @@ namespace ProjectX.IdentityContext.Persistence.Repositories.Groups
                 .ToListAsync();
         }
 
-        public async Task RemoveChildGroup(Guid id, Guid childGroupId)
+        public async Task RemoveChildGroup(GroupChildGroup childGroup)
         {
-            var group = dbContext.Groups.Include(i => i.ChildGroups).First(i => i.Id == id);
+            var group = await dbContext.Groups
+                .Include(i => i.ChildGroups).FirstAsync(i => i.Id == childGroup.ParentGroupId);
 
-            group.ChildGroups.RemoveAll(i => i.ChildGroupId == childGroupId);
+            group.ChildGroups.Remove(childGroup);
             group.Updated = DateTime.Now;
 
             await dbContext.SaveChangesAsync();

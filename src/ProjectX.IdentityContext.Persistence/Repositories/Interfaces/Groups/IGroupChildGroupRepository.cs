@@ -7,10 +7,10 @@ namespace ProjectX.IdentityContext.Persistence.Repositories.Interfaces.Groups
 {
     public partial interface IGroupRepository
     {
-        Task AddChildGroup(Guid parentGroupId, Guid childGroupId);
+        Task AddChildGroup(GroupChildGroup childGroup);
 
         Task<List<GroupChildGroup>> GetAllChildGroups(Guid id);
 
-        Task RemoveChildGroup(Guid id, Guid childGroupId);
+        Task RemoveChildGroup(GroupChildGroup childGroup);
     }
 }

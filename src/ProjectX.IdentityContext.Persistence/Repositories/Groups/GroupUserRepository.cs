@@ -4,21 +4,16 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using ProjectX.IdentityContext.Domain.Entities.Groups;
-using ProjectX.IdentityContext.Domain.Exceptions;
 
 namespace ProjectX.IdentityContext.Persistence.Repositories.Groups
 {
-    public partial class GroupRepository<TDbContext, TUser, TKey>
+    public partial class GroupRepository<TDbContext>
     {
-        public async Task AddUser(string groupName, string username)
+        public async Task AddUser(GroupUser groupUser)
         {
-            var group = await dbContext.Groups.FirstOrDefaultAsync(i => i.Name.ToLower() == groupName.ToLower());
-            if (group == null) throw new EntityNotFoundException();
+            var group = await dbContext.Groups.FirstAsync(i => i.Id == groupUser.GroupId);
 
-            var user = await userManager.FindByNameAsync(username);
-            if (user == null) throw new EntityNotFoundException();
-
-            group.Users.Add(new GroupUser {UserId = user.Id.ToString()});
+            group.Users.Add(groupUser);
             group.Updated = DateTime.Now;
 
             await dbContext.SaveChangesAsync();
@@ -33,13 +28,13 @@ namespace ProjectX.IdentityContext.Persistence.Repositories.Groups
                 .ToListAsync();
         }
 
-        public async Task RemoveUser(string groupName, string username)
+        public async Task RemoveUser(GroupUser groupUser)
         {
-            var group = dbContext.Groups
+            var group = await dbContext.Groups
                 .Include(i => i.Users)
-                .First(i => i.Name.ToLower() == groupName.ToLower());
+                .FirstAsync(i => i.Id == groupUser.GroupId);
 
-            group.Users.RemoveAll(i => i.User.UserName.ToLower() == username.ToLower());
+            group.Users.Remove(groupUser);
             group.Updated = DateTime.Now;
             
             await dbContext.SaveChangesAsync();

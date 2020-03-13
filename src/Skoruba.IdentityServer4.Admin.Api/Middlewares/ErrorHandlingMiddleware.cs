@@ -3,7 +3,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
-using ProjectX.IdentityContext.Domain.Exceptions;
+using ProjectX.IdentityContext.Application.Exceptions;
 
 namespace Skoruba.IdentityServer4.Admin.Api.Middlewares
 {

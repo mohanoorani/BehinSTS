@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ProjectX.IdentityContext.Domain.Exceptions
+namespace ProjectX.IdentityContext.Application.Exceptions
 {
     public class EntityNotFoundException : Exception
     {

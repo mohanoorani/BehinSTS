@@ -60,13 +60,11 @@ namespace Skoruba.IdentityServer4.Admin.EntityFramework.Shared.DbContexts
 
             builder.Entity<GroupChildGroup>(b =>
             {
-                b.Property<Guid>("ParentGroupId");
                 b.HasKey("ParentGroupId", "ChildGroupId");
             });
 
             builder.Entity<GroupUser>(b =>
             {
-                b.Property<Guid>("GroupId");
                 b.HasKey("GroupId", "UserId");
 
                 //b.HasOne(i => i.User).WithMany();

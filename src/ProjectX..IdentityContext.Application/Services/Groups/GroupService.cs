@@ -2,27 +2,36 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 using ProjectX.IdentityContext.Application.Dtos.Group;
+using ProjectX.IdentityContext.Application.Exceptions;
 using ProjectX.IdentityContext.Application.Mappers.Groups;
 using ProjectX.IdentityContext.Application.Services.Interfaces.Groups;
 using ProjectX.IdentityContext.Application.Services.Interfaces.Loggers;
 using ProjectX.IdentityContext.Domain;
 using ProjectX.IdentityContext.Domain.Entities.Groups;
-using ProjectX.IdentityContext.Domain.Exceptions;
 using ProjectX.IdentityContext.Event.Groups;
 using ProjectX.IdentityContext.Persistence.Repositories.Interfaces.Groups;
 
 namespace ProjectX.IdentityContext.Application.Services.Groups
 {
-    public partial class GroupService : IGroupService
+    public partial class GroupService<TUser, TKey> : IGroupService
+        where TKey : IEquatable<TKey>
+        where TUser : IdentityUser<TKey>
     {
         private readonly IGroupRepository groupRepository;
+        
+        private readonly UserManager<TUser> userManager;
 
         private readonly ILoggerService loggerService;
 
-        public GroupService(IGroupRepository groupRepository, ILoggerService loggerService)
+        public GroupService(
+            IGroupRepository groupRepository,
+            UserManager<TUser> userManager,
+            ILoggerService loggerService)
         {
             this.groupRepository = groupRepository;
+            this.userManager = userManager;
             this.loggerService = loggerService;
         }
 
@@ -84,8 +93,8 @@ namespace ProjectX.IdentityContext.Application.Services.Groups
 
             var createGroupDto = new CreateGroupDto
             {
-                Name = dto.CloneName, 
-                Description = group.Description, 
+                Name = dto.CloneName,
+                Description = group.Description,
                 CreatorId = dto.CreatorId
             };
 

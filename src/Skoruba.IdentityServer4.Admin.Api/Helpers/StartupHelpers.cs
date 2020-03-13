@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Reflection;
 using IdentityModel;
 using IdentityServer4.AccessTokenValidation;
 using IdentityServer4.EntityFramework.Options;
@@ -106,7 +105,8 @@ namespace Skoruba.IdentityServer4.Admin.Api.Helpers
 
             services.AddControllersWithViews(o => { o.Conventions.Add(new GenericControllerRouteConvention()); })
                 .AddDataAnnotationsLocalization()
-                .AddApplicationPart(Assembly.Load(new AssemblyName("Skoruba.IdentityServer4.Admin.Api")))
+                //.AddApplicationPart(Assembly.Load(new AssemblyName("Skoruba.IdentityServer4.Admin.Api")))
+                .AddApplicationPart(typeof(StartupHelpers).Assembly)
                 .ConfigureApplicationPartManager(m =>
                 {
                     m.FeatureProviders.Add(

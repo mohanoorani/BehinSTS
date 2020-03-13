@@ -17,16 +17,11 @@ namespace ProjectX.IdentityContext.Application.Services.Audits
             this._auditRepository = auditRepository;
         }
 
-        public void Add(Guid aggregateId, string eventName, DateTime eventTime, string data)
+        public void Add(Audit audit)
         {
-            _auditRepository.Add(new Audit
-            {
-                Id = Guid.NewGuid(),
-                AggregateId = aggregateId,
-                EventName = eventName,
-                EventTime = eventTime,
-                Data = data,
-            });
+            audit.Id = Guid.NewGuid();
+
+            _auditRepository.Add(audit);
         }
 
         public Task<List<Audit>> GetAll()

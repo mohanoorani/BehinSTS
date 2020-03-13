@@ -3,14 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ProjectX.IdentityContext.Application.Dtos.Group;
+using ProjectX.IdentityContext.Application.Exceptions;
 using ProjectX.IdentityContext.Application.Mappers.Groups;
 using ProjectX.IdentityContext.Domain;
-using ProjectX.IdentityContext.Domain.Exceptions;
+using ProjectX.IdentityContext.Domain.Entities.Groups;
 using ProjectX.IdentityContext.Event.Groups;
 
 namespace ProjectX.IdentityContext.Application.Services.Groups
 {
-    public partial class GroupService
+    public partial class GroupService<TUser, TKey>
     {
         public async Task AddChildGroup(GroupChildGroupDto group)
         {
@@ -23,7 +24,8 @@ namespace ProjectX.IdentityContext.Application.Services.Groups
             if (parentGroup.Id == childGroup.Id)
                 throw new Exception(DomainResources.Group_CanNotAddGroupToItself);
 
-            await groupRepository.AddChildGroup(parentGroup.Id, childGroup.Id)
+            await groupRepository.AddChildGroup(
+                    new GroupChildGroup{ ParentGroupId = parentGroup.Id, ChildGroupId = childGroup.Id})
                 .ConfigureAwait(false);
 
             loggerService.AddEvent(
@@ -48,7 +50,9 @@ namespace ProjectX.IdentityContext.Application.Services.Groups
             var childGroup = await GetByName(childGroupName).ConfigureAwait(false);
             if (childGroup == null) throw new EntityNotFoundException();
 
-            await groupRepository.RemoveChildGroup(parentGroup.Id, childGroup.Id).ConfigureAwait(false);
+            await groupRepository.RemoveChildGroup(
+                new GroupChildGroup { ParentGroupId = parentGroup.Id, ChildGroupId = childGroup.Id })
+                .ConfigureAwait(false);
 
             loggerService.AddEvent(new GroupChildGroupRemovedEvent(parentGroup.Id, childGroup.Id));
         }

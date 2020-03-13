@@ -20,9 +20,9 @@ namespace Skoruba.IdentityServer4.Admin.Api.Middlewares
         {
             try
             {
-                if (httpContext.Request.Method == "POST" ||
-                    httpContext.Request.Method == "PUT" ||
-                    httpContext.Request.Method == "DELETE")
+                if (httpContext.Request.Method == HttpMethods.Post ||
+                    httpContext.Request.Method == HttpMethods.Put ||
+                    httpContext.Request.Method == HttpMethods.Delete)
                 {
                     _unitOfWork = unitOfWork;
 

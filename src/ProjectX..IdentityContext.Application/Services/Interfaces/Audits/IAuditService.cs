@@ -7,7 +7,7 @@ namespace ProjectX.IdentityContext.Application.Services.Interfaces.Audits
 {
     public interface IAuditService
     {
-        void Add(Guid aggregateId, string eventName, DateTime eventTime, string data);
+        void Add(Audit audit);
         
         Task<List<Audit>> GetAll();
 

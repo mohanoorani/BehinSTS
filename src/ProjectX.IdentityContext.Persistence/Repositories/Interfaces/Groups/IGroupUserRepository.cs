@@ -6,10 +6,10 @@ namespace ProjectX.IdentityContext.Persistence.Repositories.Interfaces.Groups
 {
     public partial interface IGroupRepository
     {
-        Task AddUser(string groupName, string username);
+        Task AddUser(GroupUser groupUser);
 
         Task<List<GroupUser>> GetAllUsers(string groupName);
 
-        Task RemoveUser(string groupName, string username);
+        Task RemoveUser(GroupUser groupUser);
     }
 }

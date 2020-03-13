@@ -190,7 +190,7 @@ namespace Microsoft.Extensions.DependencyInjection
                     TIdentityDbContext, TPersistedGrantDbContext, TUser, TRole, TKey, TUserClaim, TUserRole, TUserLogin,
                     TRoleClaim, TUserToken>>();
             services.AddTransient<IAuditRepository, AuditRepository<TLogDbContext>>();
-            services.AddTransient<IGroupRepository, GroupRepository<TLogDbContext, TUser, TKey>>();
+            services.AddTransient<IGroupRepository, GroupRepository<TLogDbContext>>();
 
             //Services
             services
@@ -203,7 +203,8 @@ namespace Microsoft.Extensions.DependencyInjection
                         TUsersDto, TRolesDto, TUserRolesDto, TUserClaimsDto,
                         TUserProviderDto, TUserProvidersDto, TUserChangePasswordDto, TRoleClaimsDto>>();
             services.AddTransient<IPersistedGrantAspNetIdentityService, PersistedGrantAspNetIdentityService>();
-            services.AddTransient<IGroupService, GroupService>();
+            
+            services.AddTransient<IGroupService, GroupService<TUser, TKey>>();
             services.AddTransient<IAuditService, AuditService>();
             services.AddScoped<ILoggerService, LoggerService>();
             services.AddScoped<IUnitOfWork, AdminLogDbContextUnitOfWork<TLogDbContext>>();
