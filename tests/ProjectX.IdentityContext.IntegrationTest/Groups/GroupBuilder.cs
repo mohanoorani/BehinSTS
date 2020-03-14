@@ -6,6 +6,7 @@ namespace ProjectX.IdentityContext.IntegrationTest.Groups
     public class GroupBuilder
     {
         private readonly string description;
+        
         private string name;
 
         public GroupBuilder()

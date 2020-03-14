@@ -8,6 +8,7 @@ using ProjectX.IdentityContext.Application.Exceptions;
 using ProjectX.IdentityContext.Application.Mappers.Groups;
 using ProjectX.IdentityContext.Application.Services.Interfaces.Groups;
 using ProjectX.IdentityContext.Application.Services.Interfaces.Loggers;
+using ProjectX.IdentityContext.Application.UserDescriptor;
 using ProjectX.IdentityContext.Domain;
 using ProjectX.IdentityContext.Domain.Entities.Groups;
 using ProjectX.IdentityContext.Event.Groups;
@@ -25,14 +26,19 @@ namespace ProjectX.IdentityContext.Application.Services.Groups
 
         private readonly ILoggerService loggerService;
 
+        private readonly string updaterId;
+
+
         public GroupService(
             IGroupRepository groupRepository,
             UserManager<TUser> userManager,
-            ILoggerService loggerService)
+            ILoggerService loggerService,
+            IUserDescriptor userDescriptor)
         {
             this.groupRepository = groupRepository;
             this.userManager = userManager;
             this.loggerService = loggerService;
+            updaterId = userDescriptor.GetUserId();
         }
 
         public async Task<GroupDto> Create(CreateGroupDto dto)
@@ -40,7 +46,7 @@ namespace ProjectX.IdentityContext.Application.Services.Groups
             if (string.IsNullOrWhiteSpace(dto.Name))
                 throw new EntityNotFoundException(DomainResources.Group_Name_CanNotBeEmpty);
 
-            var group = new Group {Name = dto.Name, Description = dto.Description, CreatorId = dto.CreatorId};
+            var group = new Group {Name = dto.Name, Description = dto.Description, CreatorId = updaterId };
 
             await groupRepository.Add(group).ConfigureAwait(false);
 
@@ -76,7 +82,7 @@ namespace ProjectX.IdentityContext.Application.Services.Groups
 
             var oldDescription = oldGroup.Description;
 
-            await groupRepository.Update(dto.Name, dto.NewName, dto.Description, dto.UpdaterId).ConfigureAwait(false);
+            await groupRepository.Update(dto.Name, dto.NewName, dto.Description, updaterId).ConfigureAwait(false);
 
             if (!dto.Name.Equals(oldGroup.Name, StringComparison.InvariantCultureIgnoreCase))
                 loggerService.AddEvent(new GroupNameChangedEvent(oldGroup.Id, dto.Name, dto.NewName));
@@ -95,7 +101,6 @@ namespace ProjectX.IdentityContext.Application.Services.Groups
             {
                 Name = dto.CloneName,
                 Description = group.Description,
-                CreatorId = dto.CreatorId
             };
 
             await Create(createGroupDto).ConfigureAwait(false);

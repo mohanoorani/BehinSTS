@@ -6,10 +6,10 @@ namespace ProjectX.IdentityContext.Application.Services.Interfaces.Groups
 {
     public partial interface IGroupService
     {
-        Task AddUser(GroupUserDto groupUser);
+        Task AddUser(GroupUserDto groupUserDto);
         
         Task<List<GroupUserDto>> GetAllUsers(string groupName);
 
-        Task RemoveUser(string name, string username);
+        Task RemoveUser(GroupUserDto groupUserDto);
     }
 }

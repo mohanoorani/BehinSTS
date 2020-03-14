@@ -11,20 +11,21 @@ namespace ProjectX.IdentityContext.Application.Services.Groups
 {
     public partial class GroupService<TUser, TKey>
     {
-        public async Task AddUser(GroupUserDto groupUser)
+        public async Task AddUser(GroupUserDto groupUserDto)
         {
-            var group = await GetByName(groupUser.GroupName).ConfigureAwait(false);
+            var group = await GetByName(groupUserDto.GroupName).ConfigureAwait(false);
             if (group == null) throw new EntityNotFoundException();
 
-            var user = await userManager.FindByNameAsync(groupUser.Username);
+            var user = await userManager.FindByNameAsync(groupUserDto.Username);
             if (user == null) throw new EntityNotFoundException();
 
             await groupRepository.AddUser(
-                    new GroupUser {GroupId = group.Id, UserId = user.Id.ToString()})
+                    new GroupUser {GroupId = group.Id, UserId = user.Id.ToString()} ,
+                    updaterId)
                 .ConfigureAwait(false);
 
             loggerService.AddEvent(
-                new GroupUserAddedEvent(group.Id, groupUser.GroupName, groupUser.Username));
+                new GroupUserAddedEvent(group.Id, groupUserDto.GroupName, groupUserDto.Username));
         }
 
         public async Task<List<GroupUserDto>> GetAllUsers(string groupName)
@@ -34,20 +35,20 @@ namespace ProjectX.IdentityContext.Application.Services.Groups
             return users.Select(i => i?.ToGroupUserDto()).ToList();
         }
 
-        public async Task RemoveUser(string name, string username)
+        public async Task RemoveUser(GroupUserDto groupUserDto)
         {
-            var groupUserDto = new GroupUserDto {GroupName = name, Username = username};
             var group = await GetByName(groupUserDto.GroupName).ConfigureAwait(false);
+            if (group == null) throw new EntityNotFoundException();
 
-            var user = await userManager.FindByNameAsync(username);
+            var user = await userManager.FindByNameAsync(groupUserDto.Username);
             if (user == null) throw new EntityNotFoundException();
 
             await groupRepository.RemoveUser(
-                    new GroupUser { GroupId = group.Id, UserId = user.Id.ToString()})
+                    new GroupUser { GroupId = group.Id, UserId = user.Id.ToString()},
+                    updaterId)
                 .ConfigureAwait(false);
 
-            loggerService.AddEvent(new GroupUserRemovedEvent(
-                group.Id, groupUserDto.GroupName, groupUserDto.Username));
+            loggerService.AddEvent(new GroupUserRemovedEvent(group.Id, groupUserDto.GroupName, groupUserDto.Username));
         }
     }
 }

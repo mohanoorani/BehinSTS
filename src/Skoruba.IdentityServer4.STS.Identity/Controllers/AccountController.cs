@@ -135,6 +135,9 @@ namespace Skoruba.IdentityServer4.STS.Identity.Controllers
                     var result = await _signInManager.PasswordSignInAsync(user.UserName, model.Password, model.RememberLogin, lockoutOnFailure: true);
                     if (result.Succeeded)
                     {
+
+                        var tt = _userManager.GetClaimsAsync(user);
+                        
                         await _events.RaiseAsync(new UserLoginSuccessEvent(user.UserName, user.Id.ToString(), user.UserName));
 
                         if (context != null)

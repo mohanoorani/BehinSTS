@@ -6,10 +6,10 @@ namespace ProjectX.IdentityContext.Application.Services.Interfaces.Groups
 {
     public partial interface IGroupService
     {
-        Task AddChildGroup(GroupChildGroupDto group);
+        Task AddChildGroup(GroupChildGroupDto childGroupDto);
 
         Task<List<GroupChildGroupDto>> GetAllChildGroups(string groupName);
 
-        Task RemoveChildGroup(string name, string childGroupName);
+        Task RemoveChildGroup(GroupChildGroupDto childGroupDto);
     }
 }

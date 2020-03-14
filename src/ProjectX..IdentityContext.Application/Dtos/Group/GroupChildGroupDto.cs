@@ -5,7 +5,5 @@
         public string ParentGroupName { get; set; }
         
         public string ChildGroupName { get; set; }
-
-        //TODO: add updaterId
     }
 }

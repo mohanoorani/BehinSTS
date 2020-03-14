@@ -12,11 +12,11 @@ namespace ProjectX.IdentityContext.Application.Dtos.Group
 
         public string Description { get; set; }
 
-        public string CreatorId { get; }
+        public string CreatorId { get; set; }
 
         public IdentityUser Creator { get; set; }
 
-        public string? UpdaterId { get; }
+        public string? UpdaterId { get; set; }
 
         public IdentityUser Updater { get; set; }
 

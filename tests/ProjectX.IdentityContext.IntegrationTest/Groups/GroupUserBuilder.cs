@@ -11,7 +11,7 @@ namespace ProjectX.IdentityContext.IntegrationTest.Groups
         public GroupUserBuilder()
         {
             groupName = DbMigrationConstants.Group;
-            username = DbMigrationConstants.AdminUser;
+            username = DbMigrationConstants.ActiveUsername;
         }
 
         public GroupUserDto Build()

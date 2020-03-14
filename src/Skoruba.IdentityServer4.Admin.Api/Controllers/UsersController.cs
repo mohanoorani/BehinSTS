@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 using Skoruba.IdentityServer4.Admin.Api.Dtos.Roles;
 using Skoruba.IdentityServer4.Admin.Api.Dtos.Users;
 using Skoruba.IdentityServer4.Admin.Api.ExceptionHandling;
-using Skoruba.IdentityServer4.Admin.Api.Filters;
 using Skoruba.IdentityServer4.Admin.Api.Helpers.Localization;
 using Skoruba.IdentityServer4.Admin.Api.Resources;
 using Skoruba.IdentityServer4.Admin.BusinessLogic.Identity.Dtos.Identity;
@@ -19,7 +18,6 @@ namespace Skoruba.IdentityServer4.Admin.Api.Controllers
     [ApiController]
     [TypeFilter(typeof(ControllerExceptionFilterAttribute))]
     [Produces("application/json", "application/problem+json")]
-    [ServiceFilter(typeof(DomainEventLoggerFilter))]
     //[Authorize(Policy = AuthorizationConsts.AdministrationPolicy)]
     public class UsersController<TUserDto, TUserDtoKey, TRoleDto, TRoleDtoKey, TUserKey, TRoleKey, TUser, TRole, TKey,
         TUserClaim, TUserRole, TUserLogin, TRoleClaim, TUserToken,

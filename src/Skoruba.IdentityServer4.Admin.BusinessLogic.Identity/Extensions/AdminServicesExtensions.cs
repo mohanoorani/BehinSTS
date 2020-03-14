@@ -10,6 +10,7 @@ using ProjectX.IdentityContext.Application.Services.Interfaces.Audits;
 using ProjectX.IdentityContext.Application.Services.Interfaces.Groups;
 using ProjectX.IdentityContext.Application.Services.Interfaces.Loggers;
 using ProjectX.IdentityContext.Application.Services.Loggers;
+using ProjectX.IdentityContext.Application.UserDescriptor;
 using ProjectX.IdentityContext.Persistence.Repositories.Audits;
 using ProjectX.IdentityContext.Persistence.Repositories.Groups;
 using ProjectX.IdentityContext.Persistence.Repositories.Interfaces.Audits;
@@ -209,12 +210,10 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddScoped<ILoggerService, LoggerService>();
             services.AddScoped<IUnitOfWork, AdminLogDbContextUnitOfWork<TLogDbContext>>();
 
-
             //Resources
             services.AddScoped<IIdentityServiceResources, IdentityServiceResources>();
-            services
-                .AddScoped<IPersistedGrantAspNetIdentityServiceResources, PersistedGrantAspNetIdentityServiceResources
-                >();
+            services.AddScoped<IPersistedGrantAspNetIdentityServiceResources, 
+                PersistedGrantAspNetIdentityServiceResources>();
 
             //Register mapping
             services.AddAdminAspNetIdentityMapping()

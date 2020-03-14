@@ -9,12 +9,13 @@ namespace ProjectX.IdentityContext.Persistence.Repositories.Groups
 {
     public partial class GroupRepository<TDbContext>
     {
-        public async Task AddChildGroup(GroupChildGroup childGroup)
+        public async Task AddChildGroup(GroupChildGroup childGroup, string updaterId)
         {
             var group = dbContext.Groups.First(i => i.Id == childGroup.ParentGroupId);
 
             group.ChildGroups.Add(childGroup);
             group.Updated = DateTime.Now;
+            group.UpdaterId = updaterId;
 
             await dbContext.SaveChangesAsync();
         }
@@ -28,13 +29,15 @@ namespace ProjectX.IdentityContext.Persistence.Repositories.Groups
                 .ToListAsync();
         }
 
-        public async Task RemoveChildGroup(GroupChildGroup childGroup)
+        public async Task RemoveChildGroup(GroupChildGroup childGroup, string updaterId)
         {
             var group = await dbContext.Groups
-                .Include(i => i.ChildGroups).FirstAsync(i => i.Id == childGroup.ParentGroupId);
+                .Include(i => i.ChildGroups)
+                .FirstAsync(i => i.Id == childGroup.ParentGroupId);
 
             group.ChildGroups.Remove(childGroup);
             group.Updated = DateTime.Now;
+            group.UpdaterId = updaterId;
 
             await dbContext.SaveChangesAsync();
 

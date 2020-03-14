@@ -40,11 +40,11 @@ namespace ProjectX.IdentityContext.IntegrationTest
 
         private static void SeedUser(AdminIdentityDbContext adminIdentityDbContext)
         {
-            var user = new UserIdentity
+            var adminUser = new UserIdentity
             {
-                Id = "390d093e-21d6-4a74-98b6-6161e60381c6",
-                UserName = "AdminUser",
-                NormalizedUserName = "ADMINUSER",
+                Id = DbMigrationConstants.AdminUserId,
+                UserName = DbMigrationConstants.AdminUsername,
+                NormalizedUserName = DbMigrationConstants.AdminUsername.ToUpper(),
                 Email = "AdminUser@AdminUser.com",
                 NormalizedEmail = "ADMINUSER@ADMINUSER.COM",
                 PhoneNumber = "0000",
@@ -55,7 +55,24 @@ namespace ProjectX.IdentityContext.IntegrationTest
                 LockoutEnabled = true
             };
 
-            adminIdentityDbContext.Users.Add(user);
+            var activeUser = new UserIdentity
+            {
+                Id = DbMigrationConstants.ActiveUserId,
+                UserName = DbMigrationConstants.ActiveUsername,
+                NormalizedUserName = DbMigrationConstants.ActiveUsername.ToUpper(),
+                Email = "ActiveUser@ActiveUser.com",
+                NormalizedEmail = "ACTIVEUSER@ACTIVEUSER.COM",
+                PhoneNumber = "0000",
+                AccessFailedCount = 0,
+                EmailConfirmed = true,
+                PhoneNumberConfirmed = true,
+                TwoFactorEnabled = true,
+                LockoutEnabled = true
+            };
+
+            adminIdentityDbContext.Users.Add(activeUser);
+            adminIdentityDbContext.Users.Add(adminUser);
+
             adminIdentityDbContext.SaveChanges();
         }
 

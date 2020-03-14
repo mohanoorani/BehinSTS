@@ -8,11 +8,11 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using ProjectX.IdentityContext.Application.UserDescriptor;
 using Skoruba.AuditLogging.EntityFramework.Entities;
 using Skoruba.IdentityServer4.Admin.Api.Configuration;
 using Skoruba.IdentityServer4.Admin.Api.Configuration.Authorization;
 using Skoruba.IdentityServer4.Admin.Api.ExceptionHandling;
-using Skoruba.IdentityServer4.Admin.Api.Filters;
 using Skoruba.IdentityServer4.Admin.Api.Helpers;
 using Skoruba.IdentityServer4.Admin.Api.Mappers;
 using Skoruba.IdentityServer4.Admin.Api.Middlewares;
@@ -37,8 +37,6 @@ namespace Skoruba.IdentityServer4.Admin.Api
 
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddScoped<DomainEventLoggerFilter>();
-
             var adminApiConfiguration =
                 Configuration.GetSection(nameof(AdminApiConfiguration)).Get<AdminApiConfiguration>();
             services.AddSingleton(adminApiConfiguration);
@@ -51,6 +49,8 @@ namespace Skoruba.IdentityServer4.Admin.Api
 
             // Add authentication services
             RegisterAuthentication(services);
+
+            RegisterAuthorization(services);
 
             AddSerilogToProjectXIntegrationTest(services);
 
@@ -89,6 +89,9 @@ namespace Skoruba.IdentityServer4.Admin.Api
                 UserRolesDto<RoleDto<string>, string, string>,
                 UserClaimsDto<string>, UserProviderDto<string>, UserProvidersDto<string>, UserChangePasswordDto<string>,
                 RoleClaimsDto<string>>();
+
+
+            RegisterExtraServices(services);
 
             services.AddSwaggerGen(options =>
             {
@@ -141,8 +144,7 @@ namespace Skoruba.IdentityServer4.Admin.Api
             app.UseRouting();
             UseAuthentication(app);
 
-            app.UseMiddleware<ErrorHandlingMiddleware>();
-            app.UseMiddleware<UnitOfWorkMiddleWare>();
+            app.UseMiddleware<ProjectXMiddleWare>();
 
             app.UseCors();
             app.UseAuthorization();
@@ -154,6 +156,11 @@ namespace Skoruba.IdentityServer4.Admin.Api
                     ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
                 });
             });
+        }
+
+        protected virtual void RegisterExtraServices(IServiceCollection services)
+        {
+            services.AddScoped<IUserDescriptor, UserDescriptor<UserIdentity, string>>();
         }
 
         protected virtual void AddSerilogToProjectXIntegrationTest(IServiceCollection services)

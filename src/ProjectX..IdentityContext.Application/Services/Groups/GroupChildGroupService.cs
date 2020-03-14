@@ -13,19 +13,20 @@ namespace ProjectX.IdentityContext.Application.Services.Groups
 {
     public partial class GroupService<TUser, TKey>
     {
-        public async Task AddChildGroup(GroupChildGroupDto group)
+        public async Task AddChildGroup(GroupChildGroupDto childGroupDto)
         {
-            var parentGroup = await GetByName(group.ParentGroupName).ConfigureAwait(false);
+            var parentGroup = await GetByName(childGroupDto.ParentGroupName).ConfigureAwait(false);
             if (parentGroup == null) throw new EntityNotFoundException();
 
-            var childGroup = await GetByName(group.ChildGroupName).ConfigureAwait(false);
+            var childGroup = await GetByName(childGroupDto.ChildGroupName).ConfigureAwait(false);
             if (childGroup == null) throw new EntityNotFoundException();
 
             if (parentGroup.Id == childGroup.Id)
                 throw new Exception(DomainResources.Group_CanNotAddGroupToItself);
 
             await groupRepository.AddChildGroup(
-                    new GroupChildGroup{ ParentGroupId = parentGroup.Id, ChildGroupId = childGroup.Id})
+                    new GroupChildGroup {ParentGroupId = parentGroup.Id, ChildGroupId = childGroup.Id},
+                    updaterId)
                 .ConfigureAwait(false);
 
             loggerService.AddEvent(
@@ -42,16 +43,17 @@ namespace ProjectX.IdentityContext.Application.Services.Groups
             return childGroups.Select(i => i?.ToGroupChildGroupDto()).ToList();
         }
 
-        public async Task RemoveChildGroup(string name, string childGroupName)
+        public async Task RemoveChildGroup(GroupChildGroupDto childGroupDto)
         {
-            var parentGroup = await GetByName(name).ConfigureAwait(false);
+            var parentGroup = await GetByName(childGroupDto.ParentGroupName).ConfigureAwait(false);
             if (parentGroup == null) throw new EntityNotFoundException();
 
-            var childGroup = await GetByName(childGroupName).ConfigureAwait(false);
+            var childGroup = await GetByName(childGroupDto.ChildGroupName).ConfigureAwait(false);
             if (childGroup == null) throw new EntityNotFoundException();
 
             await groupRepository.RemoveChildGroup(
-                new GroupChildGroup { ParentGroupId = parentGroup.Id, ChildGroupId = childGroup.Id })
+                    new GroupChildGroup {ParentGroupId = parentGroup.Id, ChildGroupId = childGroup.Id},
+                    updaterId)
                 .ConfigureAwait(false);
 
             loggerService.AddEvent(new GroupChildGroupRemovedEvent(parentGroup.Id, childGroup.Id));

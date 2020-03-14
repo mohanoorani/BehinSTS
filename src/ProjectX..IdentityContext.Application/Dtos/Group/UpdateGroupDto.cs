@@ -9,7 +9,5 @@ namespace ProjectX.IdentityContext.Application.Dtos.Group
         public string NewName { get; set; }
 
         public string Description { get; set; }
-
-        public string UpdaterId { get; set; }
     }
 }

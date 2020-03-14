@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ProjectX.IdentityContext.Application.Dtos.Group;
+using ProjectX.IdentityContext.Application.Services.Interfaces.Groups;
 using Skoruba.IdentityServer4.Admin.Api.ExceptionHandling;
-using Skoruba.IdentityServer4.Admin.Api.Filters;
-using IGroupService = ProjectX.IdentityContext.Application.Services.Interfaces.Groups.IGroupService;
 
 namespace Skoruba.IdentityServer4.Admin.Api.Controllers
 {
@@ -12,8 +12,8 @@ namespace Skoruba.IdentityServer4.Admin.Api.Controllers
     [ApiController]
     [TypeFilter(typeof(ControllerExceptionFilterAttribute))]
     [Produces("application/json", "application/problem+json")]
-    [ServiceFilter(typeof(DomainEventLoggerFilter))]
     //[Authorize(Policy = AuthorizationConsts.AdministrationPolicy)]
+    [Authorize]
     public class GroupsController : ControllerBase
     {
         private readonly IGroupService groupService;
@@ -93,7 +93,13 @@ namespace Skoruba.IdentityServer4.Admin.Api.Controllers
         [HttpDelete("{name}/ChildGroups/{childGroupName}")]
         public async Task<ActionResult> DeleteChildGroup(string name, string childGroupName)
         {
-            await groupService.RemoveChildGroup(name, childGroupName).ConfigureAwait(false);
+            var childGroupDto = new GroupChildGroupDto
+            {
+                ParentGroupName = name,
+                ChildGroupName = childGroupName,
+            };
+
+            await groupService.RemoveChildGroup(childGroupDto).ConfigureAwait(false);
 
             return Ok();
         }
@@ -117,7 +123,13 @@ namespace Skoruba.IdentityServer4.Admin.Api.Controllers
         [HttpDelete("{name}/Users/{userName}")]
         public async Task<ActionResult> DeleteUser(string name, string username)
         {
-            await groupService.RemoveUser(name,username).ConfigureAwait(false);
+            var groupUser = new GroupUserDto
+            {
+                GroupName = name,
+                Username = username,
+            };
+
+            await groupService.RemoveUser(groupUser).ConfigureAwait(false);
 
             return Ok();
         }

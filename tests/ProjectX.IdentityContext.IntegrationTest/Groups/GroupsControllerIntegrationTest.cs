@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using FluentAssertions;
+using ProjectX.IdentityContext.IntegrationTest.Fake;
 using Xunit;
 
 namespace ProjectX.IdentityContext.IntegrationTest.Groups
@@ -39,6 +40,8 @@ namespace ProjectX.IdentityContext.IntegrationTest.Groups
 
             group.Name.Should().Be(groupDto.Name);
             group.Description.Should().Be(groupDto.Description);
+            group.CreatorId.Should().Be(DbMigrationConstants.ActiveUserId);
+            group.UpdaterId.Should().BeNull();
 
             await Delete(groupDto.Name);
         }
@@ -53,9 +56,7 @@ namespace ProjectX.IdentityContext.IntegrationTest.Groups
 
             await Create(groupDto);
 
-            var updateDto = new GroupBuilder()
-                .WithName(name)
-                .BuildUpdateGroupDto(groupDto.Name);
+            var updateDto = new GroupBuilder().WithName(name).BuildUpdateGroupDto(groupDto.Name);
 
             await Update(updateDto, HttpStatusCode.BadRequest);
 
@@ -72,9 +73,7 @@ namespace ProjectX.IdentityContext.IntegrationTest.Groups
 
             await Create(groupDto);
 
-            var updateDto = new GroupBuilder()
-                .WithName(name)
-                .BuildUpdateGroupDto(groupDto.Name);
+            var updateDto = new GroupBuilder().WithName(name).BuildUpdateGroupDto(groupDto.Name);
 
             await Update(updateDto, HttpStatusCode.BadRequest);
 
@@ -108,9 +107,13 @@ namespace ProjectX.IdentityContext.IntegrationTest.Groups
 
             var firstGroup = groups.First(i => i.Name == DbMigrationConstants.Group);
             firstGroup.Name.Should().Be(DbMigrationConstants.Group);
+            firstGroup.CreatorId.Should().Be(DbMigrationConstants.ActiveUserId);
+            firstGroup.UpdaterId.Should().BeNull();
 
             var secondGroup = groups.First(i => i.Name == DbMigrationConstants.ChildGroup);
             secondGroup.Name.Should().Be(DbMigrationConstants.ChildGroup);
+            secondGroup.CreatorId.Should().Be(DbMigrationConstants.ActiveUserId);
+            secondGroup.UpdaterId.Should().BeNull();
         }
 
         [Fact]
@@ -122,13 +125,18 @@ namespace ProjectX.IdentityContext.IntegrationTest.Groups
 
             var updateDto = new GroupBuilder().WithName("GroupA").BuildUpdateGroupDto(groupDto.Name);
 
+            FakeUserDescriptor.SetUser(DbMigrationConstants.AdminUserId, DbMigrationConstants.AdminUsername);
+
             await Update(updateDto);
 
             var group = await GetByName(updateDto.NewName);
 
             group.Name.Should().Be(updateDto.NewName);
             group.Description.Should().Be(updateDto.Description);
+            group.Updater.Id.Should().Be(DbMigrationConstants.AdminUserId);
+            group.Updater.UserName.Should().Be(DbMigrationConstants.AdminUsername);
 
+            FakeUserDescriptor.ResetUser();
             await Delete(updateDto.NewName);
         }
 

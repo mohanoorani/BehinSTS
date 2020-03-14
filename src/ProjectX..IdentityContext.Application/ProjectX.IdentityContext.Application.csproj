@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="UAParser" Version="3.1.44" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\ProjectX.IdentityContext.Domain\ProjectX.IdentityContext.Domain.csproj" />
     <ProjectReference Include="..\ProjectX.IdentityContext.Event\ProjectX.IdentityContext.Event.csproj" />
     <ProjectReference Include="..\ProjectX.IdentityContext.Persistence\ProjectX.IdentityContext.Persistence.csproj" />
