@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Faker;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Npgsql;
@@ -79,9 +80,20 @@ namespace ProjectX.IdentityContext.IntegrationTest
         private static void SeedGroup(AdminLogDbContext adminLogDbContext)
         {
             var group = new Group
-                {Name = DbMigrationConstants.Group, Description = "Description", Created = DateTime.Now};
+            {
+                Name = DbMigrationConstants.Group, 
+                Description = Lorem.Sentence(), 
+                Created = DateTime.Now, 
+                CreatorId = DbMigrationConstants.ActiveUserId
+            };
+
             var childGroup = new Group
-                {Name = DbMigrationConstants.ChildGroup, Description = "Description", Created = DateTime.Now};
+            {
+                Name = DbMigrationConstants.ChildGroup, 
+                Description = Lorem.Sentence(),
+                Created = DateTime.Now, 
+                CreatorId = DbMigrationConstants.ActiveUserId
+            };
 
             adminLogDbContext.Groups.Add(group);
             adminLogDbContext.Groups.Add(childGroup);

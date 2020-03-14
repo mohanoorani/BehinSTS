@@ -31,11 +31,9 @@ namespace ProjectX.IdentityContext.Persistence.Repositories.Groups
 
         public async Task RemoveUser(GroupUser groupUser, string updaterId)
         {
-            var group = await dbContext.Groups
-                .Include(i => i.Users)
-                .FirstAsync(i => i.Id == groupUser.GroupId);
+            var group = await dbContext.Groups.Include(i => i.Users).FirstAsync(i => i.Id == groupUser.GroupId);
 
-            group.Users.Remove(groupUser);
+            group.Users.RemoveAll(i => i.GroupId == groupUser.GroupId && i.UserId == groupUser.UserId);
             group.Updated = DateTime.Now;
             group.UpdaterId = updaterId;
 

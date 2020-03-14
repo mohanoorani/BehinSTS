@@ -39,6 +39,8 @@ namespace ProjectX.IdentityContext.Persistence.Repositories.Groups
             return dbContext.Groups
                 .Include(i => i.ChildGroups)
                 .Include(i => i.ParentGroups)
+                .Include(i => i.Creator)
+                .Include(i => i.Updater)
                 .Include(i => i.Users).ThenInclude(i => i.User)
                 .FirstOrDefaultAsync(i => i.Name.ToLower() == name.ToLower());
         }

@@ -35,7 +35,8 @@ namespace ProjectX.IdentityContext.Persistence.Repositories.Groups
                 .Include(i => i.ChildGroups)
                 .FirstAsync(i => i.Id == childGroup.ParentGroupId);
 
-            group.ChildGroups.Remove(childGroup);
+            group.ChildGroups.RemoveAll(i => i.ParentGroupId == childGroup.ParentGroupId && 
+                                             i.ChildGroupId == childGroup.ChildGroupId);
             group.Updated = DateTime.Now;
             group.UpdaterId = updaterId;
 

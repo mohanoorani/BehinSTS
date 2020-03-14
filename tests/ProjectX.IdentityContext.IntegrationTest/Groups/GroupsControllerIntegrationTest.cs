@@ -108,12 +108,10 @@ namespace ProjectX.IdentityContext.IntegrationTest.Groups
             var firstGroup = groups.First(i => i.Name == DbMigrationConstants.Group);
             firstGroup.Name.Should().Be(DbMigrationConstants.Group);
             firstGroup.CreatorId.Should().Be(DbMigrationConstants.ActiveUserId);
-            firstGroup.UpdaterId.Should().BeNull();
 
             var secondGroup = groups.First(i => i.Name == DbMigrationConstants.ChildGroup);
             secondGroup.Name.Should().Be(DbMigrationConstants.ChildGroup);
             secondGroup.CreatorId.Should().Be(DbMigrationConstants.ActiveUserId);
-            secondGroup.UpdaterId.Should().BeNull();
         }
 
         [Fact]
